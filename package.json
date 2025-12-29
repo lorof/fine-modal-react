@@ -1,9 +1,9 @@
 {
-  "name": "react-components-starter",
+  "name": "fine-modal-react",
   "type": "module",
   "version": "0.0.0",
-  "description": "A starter for creating a React component library.",
-  "author": "Author Name <author.name@mail.com>",
+  "description": "Typed, promise-based modal utilities for React 19+.",
+  "author": "lorof",
   "license": "MIT",
   "homepage": "https://github.com/lorof/fine-modal-react#readme",
   "repository": {
@@ -13,6 +13,13 @@
   "bugs": {
     "url": "https://github.com/lorof/fine-modal-react/issues"
   },
+  "keywords": [
+    "react",
+    "modal",
+    "dialog",
+    "typescript",
+    "promise"
+  ],
   "exports": {
     ".": "./dist/index.js",
     "./package.json": "./package.json"
