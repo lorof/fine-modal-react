@@ -20,10 +20,10 @@ Peer deps: `react` and `react-dom` (19.x).
 4) Choose mounting strategy:  
    - Global host: create `ModalHost = FineModal.createHost({ modals })` near root.  
    - Local: render the modal component where you need it.  
-5) Call `open`:
-   - `FineModal.open('ModalId', props?)` for global host.  
-   - `SomeModal.open(props?)` for colocated modal.  
-   Resolves with the value from `onConfirm`, or `null` on `onCancel/close`.
+5) Call `open` (typed both ways):
+   - `FineModal.open('ModalId', props?)` uses registered ids/props/result from `modals`.
+   - `SomeModal.open(props?)` uses the component’s props/result.
+   Both resolve to the `onConfirm` value, or `null` on `onCancel/close`.
 
 ## Define a modal (shared for both strategies)
 
@@ -114,6 +114,29 @@ export function App() {
 
   return <button onClick={handleInvite}>Invite teammate</button>
 }
+```
+
+## Type safety (global & local)
+
+```ts
+// Global host: ids/props/result inferred from registered modals
+const result = await FineModal.open('ConfirmInviteModal', { email: 'team@org.com' })
+//    ^? result is "sent" | null
+
+// TS error: missing required prop "email"
+FineModal.open('ConfirmInviteModal')
+
+// TS error: unknown modal id
+FineModal.open('UnknownModal')
+```
+
+```ts
+// Local modal: props/result inferred from component definition
+const result = await ConfirmInviteModal.open({ email: 'new.user@org.com' })
+//    ^? result is "sent" | null
+
+// TS error: email must be a string
+ConfirmInviteModal.open({ email: 42 })
 ```
 
 ## Option B: Local modal component (colocated scope)
