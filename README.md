@@ -12,36 +12,61 @@ pnpm add fine-modal-react
 
 Peer deps: `react` and `react-dom` (19.x).
 
+## Quickstart (checklist)
+
+1) Install the package.  
+2) Define your modal with `FineModal.define`.  
+3) Aggregate modals in `modals.ts` and augment `Register` for typed `open`.  
+4) Choose mounting strategy:  
+   - Global host: create `ModalHost = FineModal.createHost({ modals })` near root.  
+   - Local: render the modal component where you need it.  
+5) Call `open`:
+   - `FineModal.open('ModalId', props?)` for global host.  
+   - `SomeModal.open(props?)` for colocated modal.  
+   Resolves with the value from `onConfirm`, or `null` on `onCancel/close`.
+
 ## Define a modal (shared for both strategies)
+
+`ConfirmInviteModal.tsx`
 
 ```tsx
 import { FineModal } from 'fine-modal-react'
 
+interface ConfirmInviteModalProps {
+  initialProps: { email: string }
+  onConfirm: (value: 'sent') => void
+  onCancel: () => void
+}
+
+const ConfirmInvite = ({
+  initialProps,
+  onConfirm,
+  onCancel,
+}: ConfirmInviteModalProps) => (
+  <section>
+    <p>Send an invite to {initialProps.email}?</p>
+    <div>
+      <button type="button" onClick={() => onConfirm('sent')}>Send</button>
+      <button type="button" onClick={onCancel}>Cancel</button>
+    </div>
+  </section>
+)
+
 export const ConfirmInviteModal = FineModal.define({
   id: 'ConfirmInviteModal',
-  component: ({ initialProps, onConfirm, onCancel }: {
-    initialProps: { email: string }
-    onConfirm: (value: 'sent') => void
-    onCancel: () => void
-  }) => (
-    <section>
-      <p>Send an invite to {initialProps.email}?</p>
-      <div>
-        <button type="button" onClick={() => onConfirm('sent')}>Send</button>
-        <button type="button" onClick={onCancel}>Cancel</button>
-      </div>
-    </section>
-  ),
+  component: ConfirmInvite,
 })
-
-export const modals = [ConfirmInviteModal] as const
 ```
 
-### TypeScript registration for typed `open` (required for typing)
+`modals.ts`
 
 ```ts
-import type { modals } from './modals'
+import { ConfirmInviteModal } from './ConfirmInviteModal'
 
+// Collect all modals in one place for the host and typed open()
+export const modals = [ConfirmInviteModal] as const
+
+// Module augmentation kept here for convenience; required for typed open()
 declare module 'fine-modal-react' {
   interface Register {
     readonly modals?: typeof modals
@@ -119,5 +144,6 @@ export function App() {
 
 - `onConfirm(value)` resolves the promise returned by `open` with `value`.
 - `onCancel()` resolves the promise with `null` and closes the modal.
-- If your modal needs initial props, add an `initialProps` field to the component props; `open` will require/accept that shape.
+- If your modal needs initial props, add an `initialProps` field to the component props; `open` will require/accept that shape. If not needed, omit `initialProps` and `open()` will take no args.
 - `FineModal.open` automatically closes an existing modal with the same id before opening a new one.
+- Keep the module augmentation file (`modals.ts` in the example) included in `tsconfig` so TypeScript picks up the `Register` interface extension.
