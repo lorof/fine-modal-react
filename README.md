@@ -96,7 +96,7 @@ export function App() {
 Render the modal component where you need it; open it via its static API. This avoids a global host if you only need the modal in one subtree.
 
 ```tsx
-import { ConfirmInviteModal } from './modals'
+import { ConfirmInviteModal } from './ConfirmInviteModal'
 
 export function App() {
   const handleInvite = async () => {
