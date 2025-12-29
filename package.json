@@ -1,7 +1,7 @@
 {
   "name": "fine-modal-react",
   "type": "module",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Typed, promise-based modal utilities for React 19+.",
   "author": "lorof",
   "license": "MIT",
