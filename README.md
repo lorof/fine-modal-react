@@ -37,7 +37,7 @@ export const ConfirmInviteModal = FineModal.define({
 export const modals = [ConfirmInviteModal] as const
 ```
 
-### (Optional) TypeScript registration for typed `open`
+### TypeScript registration for typed `open` (required for typing)
 
 ```ts
 import type { modals } from './modals'
